@@ -1,5 +1,4 @@
-from objects.syberhacker import *
-from objects.froggo import *
+from objects.gameobjectfactory import *
 from levels.level01 import *
 
 class Model:
@@ -14,6 +13,7 @@ class Model:
         print(init)
         self.objectlist = []
         self.level = level01()
+        self.gameobjectfactory = Gameobjectfactory()
         self.spawnobjects()
         init = "Model has been initialized"
         print(init)
@@ -25,15 +25,12 @@ class Model:
         for i in range(0, self.level.colormap.get_width()):
             for j in range(0, self.level.colormap.get_height()):
                 color = self.level.colormap.get_at((i, j))
-                if color[0] == 0 and color[1] == 0 and color[2] == 255 and color[3] == 255:
-                    gameobject = Syberhacker(i, j)
+                if(color[0], color[1], color[2], color[3]) in self.level.objectdict:
+                    objectname = self.level.objectdict[(color[0], color[1], color[2], color[3])]
+                    gameobject = self.gameobjectfactory.create_object(objectname, i, j)
                     gameobject.y -= gameobject.image.get_height()
-                    self.player = gameobject
-                    self.objectlist.append(gameobject)
-
-                if color[0] == 255 and color[1] == 255 and color[2] == 0 and color[3] == 255:
-                    gameobject = Froggo(i, j)
-                    gameobject.y -= gameobject.image.get_height()
+                    if(objectname == "player"):
+                        self.player = gameobject
                     self.objectlist.append(gameobject)
 
     #Find i position x, y is not allowed
