@@ -35,6 +35,7 @@ class View:
         rect = pygame.Rect(rect.x * self.scale, rect.y*self.scale, rect.width*self.scale, -1 * rect.height*self.scale)
         pygame.draw.rect(self.screen, (r, g, b), rect)
 
-     #Draws text at the given position, don't scale text, it looks horrible. scale x and y still as usual   
-    def drawstring(self, string, x, y):
-        self.screen.blit(self.basicfont.render(string, False, (255, 0, 255)), (x * self.scale, y * self.scale))
+     #Draws text at the given position, don't scale text, it looks horrible. scale x and y still as usual
+     #Color is given by (r, g, b) values
+    def drawstring(self, string, x, y, color):
+        self.screen.blit(self.basicfont.render(string, False, color), (x * self.scale, y * self.scale))

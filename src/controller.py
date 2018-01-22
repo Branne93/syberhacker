@@ -48,8 +48,12 @@ class Controller:
         self.view.draw(self.model.level.foreground, (0,0))
 
         #if we can interact, we want a string to prompt us
+        #this should probably be abstracted so thjat each object knows how it's to be interacted with, much cleaner
         if self.collided_gameobject:
-            self.view.drawstring(self.collided_gameobject.interactstring, self.model.player.x, self.model.player.y-10)
+            if(self.collided_gameobject.interactstring== "talk"):
+                self.view.drawstring("press space to talk", self.model.player.x, self.model.player.y-10, (255, 255, 255))
+            else:
+                self.view.drawstring("interact", self.model.player.x, self.model.player.y-10, (255, 255, 255))
 
 
 
@@ -68,6 +72,9 @@ class Controller:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.done = True
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE and self.collided_gameobject:
+                    self.interact(self.model.player, self.collided_gameobject)
 
         keys = pygame.key.get_pressed()
 
@@ -80,6 +87,30 @@ class Controller:
             self.control_char("left", self.movespeed*self.dt)
         if keys[pygame.K_RIGHT]:
             self.control_char("right", self.movespeed*self.dt)
-        if keys[pygame.K_SPACE] and self.collided_gameobject:
-            print("initiated interaction with", self.collided_gameobject)
 
+
+
+    def interact(self, player, gameobject):
+        if(self.collided_gameobject.interactstring== "talk"):
+            self.start_conversation(player, gameobject)
+        else:
+            print("unhandled interaction type!")
+
+    def start_conversation(self, player, gameobject):
+        self.collided_gameobject = None
+        for stringtuple in gameobject.dialogue:
+            print(stringtuple)
+            if(stringtuple[0] == "player"):
+                #draw over the earlier prompt
+                self.draw_scene()
+                self.view.drawstring(stringtuple[1], player.x, player.y-10, player.speechcolor)
+            else:
+                self.draw_scene()
+                self.view.drawstring(stringtuple[1], gameobject.x, gameobject.y-10, gameobject.speechcolor)
+            #update the screen to view the conversation
+            self.view.flip()
+            spacenotpressed = True
+            while spacenotpressed:
+                for event in pygame.event.get():
+                    spacenotpressed = not (event.type == pygame.KEYUP and event.key == pygame.K_SPACE)
+                    
