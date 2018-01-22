@@ -7,7 +7,7 @@ class Controller:
     global done
     global dt
     global movespeed
-    global interactstring
+    global collided_gameobject
 
     #Basic constructor for basicly everything, nothing fancy.
     def __init__(self, model, view):
@@ -24,10 +24,11 @@ class Controller:
     #main update method, dt is delta time which is time since last update. Compensates for different hardware.
     def update(self, dt):
         self.dt = dt
-        self.interactstring = self.model.player_collide()
+        self.collided_gameobject = self.model.player_collide()
         self.draw_scene()
         self.read_input()
         self.view.flip()
+        self.collided_gameobject = None
 
     #draw the loaded level and all the game objects.
     def draw_scene(self):
@@ -47,8 +48,9 @@ class Controller:
         self.view.draw(self.model.level.foreground, (0,0))
 
         #if we can interact, we want a string to prompt us
-        if self.interactstring:
-            self.view.drawstring(self.interactstring, self.model.player.x, self.model.player.y-10)
+        if self.collided_gameobject:
+            self.view.drawstring(self.collided_gameobject.interactstring, self.model.player.x, self.model.player.y-10)
+
 
 
     #move the moveable characters.
@@ -78,4 +80,6 @@ class Controller:
             self.control_char("left", self.movespeed*self.dt)
         if keys[pygame.K_RIGHT]:
             self.control_char("right", self.movespeed*self.dt)
+        if keys[pygame.K_SPACE] and self.collided_gameobject:
+            print("initiated interaction with", self.collided_gameobject)
 

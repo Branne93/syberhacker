@@ -77,6 +77,6 @@ class Model:
         for gameobject in objectlist:
             #An interactable object has an interactstring. check if we collide with their floor rectangle
             if self.player.floorrect.colliderect(gameobject.floorrect) and gameobject.interactstring:
-                return gameobject.interactstring
+                return gameobject
         #default return
         return None
