@@ -12,7 +12,7 @@ class Model:
         init = "initializing model"
         print(init)
         self.objectlist = []
-        self.level = level01()
+        self.level = level01(True)
         self.gameobjectfactory = Gameobjectfactory()
         self.spawnobjects()
         init = "Model has been initialized"
